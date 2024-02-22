@@ -19,13 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-<<<<<<< HEAD
-=======
  
 Route::get('/auth/{provider}/redirect', [ProviderController::class,'redirect']);
 Route::get('/auth/{provider}/callback', [ProviderController::class,'callback'] );
 
->>>>>>> a69b2818b4705e752469399df88b92fd0f234bb5
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
