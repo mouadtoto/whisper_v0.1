@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # services:
 #     laravel.test:
 #         build:
@@ -103,6 +104,8 @@
 
 # # volumes:
 # #   db-data: ~ 
+=======
+>>>>>>> d770067ed94c9c727b2772442ef1c08376d3abed
 services:
     laravel.test:
         build:
@@ -158,4 +161,8 @@ networks:
         driver: bridge
 volumes:
     sail-pgsql:
+<<<<<<< HEAD
         driver: local
+=======
+        driver: local
+>>>>>>> d770067ed94c9c727b2772442ef1c08376d3abed

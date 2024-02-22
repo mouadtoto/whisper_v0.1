@@ -15,7 +15,11 @@ return [
     |
     */
 
+<<<<<<< HEAD
     'default' => env('DB_CONNECTION', 'mysql'),
+=======
+    'default' => env('DB_CONNECTION', 'pgsql'),
+>>>>>>> d770067ed94c9c727b2772442ef1c08376d3abed
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +73,11 @@ return [
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'whisper'),
+<<<<<<< HEAD
             'username' => env('DB_USERNAME', 'pgsql'),
+=======
+            'username' => env('DB_USERNAME', 'postgres'),
+>>>>>>> d770067ed94c9c727b2772442ef1c08376d3abed
             'password' => env('DB_PASSWORD', 'mouad@123'),
             'charset' => 'utf8',
             'prefix' => '',
