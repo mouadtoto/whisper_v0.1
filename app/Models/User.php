@@ -21,6 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+<<<<<<< HEAD
+=======
+        'username',
+        'provider',
+        'provider_id',
+        'provider_token',
+>>>>>>> 41163daedb890a8933889bb692541d8200c69458
     ];
 
     /**
