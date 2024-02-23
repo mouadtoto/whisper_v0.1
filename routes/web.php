@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\ProviderController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\Auth\ProviderController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +27,13 @@ Route::get('/auth/{provider}/callback', [ProviderController::class,'callback'] )
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [ConversationController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/conversations', [ConversationController::class,'index'])->middleware(['auth', 'verified'])->name('conversations');
+Route::get('/conversations/{user}', [ConversationController::class,'show'])->middleware(['auth', 'verified','canTalkTo'])->name('conversations.show');
+Route::post('/conversations/{user}', [ConversationController::class,'store'])->middleware(['auth', 'verified','canTalkTo']);
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
