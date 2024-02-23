@@ -21,8 +21,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [ConversationController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/conversations', [ConversationController::class,'index'])->middleware(['auth', 'verified'])->name('conversations');
-Route::get('/conversations/{user}', [ConversationController::class,'show'])->middleware(['auth', 'verified'])->name('conversations.show');
-Route::post('/conversations/{user}', [ConversationController::class,'store'])->middleware(['auth', 'verified']);
+Route::get('/conversations/{user}', [ConversationController::class,'show'])->middleware(['auth', 'verified','canTalkTo'])->name('conversations.show');
+Route::post('/conversations/{user}', [ConversationController::class,'store'])->middleware(['auth', 'verified','canTalkTo']);
 
 
 

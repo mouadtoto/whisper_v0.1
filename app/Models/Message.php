@@ -15,4 +15,9 @@ class Message extends Model
         'to_id',
         'read_at'
     ];
+    public function from()
+    {
+        return $this->belongsTo(User::class,'from_id');
+
+    }
 }

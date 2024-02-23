@@ -41,13 +41,37 @@
                                     {{$user->name}}
                                 </div>
                                 <div class="grid grid-cols-12 gap-y-2">
-
+                                    @foreach($messages as $message)
+                                        @if($message->from->id !== auth()->user()->id)
+                                            <div class="col-start-1 col-end-8 p-3 rounded-lg">
+                                                <div class="flex flex-row items-center">
+                                                    <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                                        him
+                                                    </div>
+                                                    <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                                                        <div>{{ $message->content }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="col-start-6 col-end-13 p-3 rounded-lg">
+                                                <div class="flex items-center justify-start flex-row-reverse">
+                                                    <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                                        Moi
+                                                    </div>
+                                                    <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                                                        <div>{{ $message->content }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                         <form action="" method="post" >
                             {{csrf_field()}}
-                        <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
+                          <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
                             <div>
                                 <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -57,13 +81,7 @@
                             </div>
                             <div class="flex-grow ml-4">
                                 <div class="relative w-full">
-
-
-                                        <input   name="content" type="text" placeholder="Write message" class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"/>
-
-
-
-
+                                        <input  name="content" type="text" placeholder="Write message" class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"/>
                                 </div>
                             </div>
                             <div class="ml-4">

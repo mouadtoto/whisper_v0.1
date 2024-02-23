@@ -5,7 +5,7 @@ namespace  App\Repository;
 
 use App\Models\Message;
 use App\Models\User;
-
+use Illuminate\Database\Eloquent\Builder;
 
 
 class  ConversationRepository
@@ -39,5 +39,10 @@ class  ConversationRepository
         ]);
 
     }
+     public function getMessagesFor($from,$to) :Builder
+     {
+          return $this->message->newQuery()->whereRaw("((from_id =$from AND to_id =$to)OR (from_id = $to AND to_id = $from))")
+             ->orderBy('created_at','ASC');
+     }
 
 }
