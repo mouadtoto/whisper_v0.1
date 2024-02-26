@@ -9,8 +9,8 @@ class Request extends Model
 {
     use HasFactory;
     protected $fillable = [
-       'from',
-       'to',
+       'from_id',
+       'to_id',
        'status',
     ];
     public function user(){
