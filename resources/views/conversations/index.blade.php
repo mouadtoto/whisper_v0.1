@@ -1,4 +1,7 @@
 <x-app-layout>
+    <x-add-friend>
+                      
+    </x-add-friend>
     <div class="bg-gray-300">
         <div class="flex h-screen antialiased text-gray-800">
             <div class="flex flex-row h-full w-full overflow-x-hidden">
