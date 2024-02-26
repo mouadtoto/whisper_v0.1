@@ -5,6 +5,9 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\Auth\ProviderController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RequestController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,7 +26,7 @@ Route::get('/', function () {
  
 Route::get('/auth/{provider}/redirect', [ProviderController::class,'redirect']);
 Route::get('/auth/{provider}/callback', [ProviderController::class,'callback'] );
-
+Route::get('/friends', [HomeController::class , 'index'] )->name('friends');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -36,6 +39,7 @@ Route::post('/conversations/{user}', [ConversationController::class,'store'])->m
 
 
 Route::middleware('auth')->group(function () {
+    Route::post('/request/sent', [RequestController::class,'storeRequest'])->name('request');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
