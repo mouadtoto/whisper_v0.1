@@ -79,6 +79,10 @@
         </div>
       </div>
     </div>
+<div>
+  {!!$qr!!}
+</div>
+
     <footer class="relative bg-blueGray-200 pt-8 pb-6 mt-8">
   <div class="container mx-auto px-4">
     <div class="flex flex-wrap items-center md:justify-between justify-center">
@@ -90,6 +94,6 @@
     </div>
   </div>
 </footer>
-  </section>
+  </section>  
 </main>
 </x-app-layout>

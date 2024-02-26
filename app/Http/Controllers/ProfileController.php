@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Auth\AuthManager;
 use App\Models\User;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class ProfileController extends Controller
@@ -18,7 +19,7 @@ class ProfileController extends Controller
      * Display the user's profile form.
      */
 
-     /**
+    /**
      * @var AuthManager
      */
     private $auth;
@@ -29,17 +30,18 @@ class ProfileController extends Controller
     }
 
     public function getUser($userId)
-    { 
+    {
         return User::findOrFail($userId);
     }
 
-     public function myprofile()
-     {
-         $userId = $this->auth->user()->id;
-         $user = $this->getUser($userId);
-         
-         return view('profile.myprofile', ['user' => $user]);
-     }
+    public function myprofile()
+    {
+        $userId = $this->auth->user()->id;
+        $user = $this->getUser($userId);
+        $id = auth()->user()->id;
+        $QR = QrCode::generate('localhost/Qr/friend/'.$id);
+        return view('profile.myprofile', ['user' => $user])->with('qr', $QR);
+    }
     // public function  index()
     // {
     //     return view('conversations/index',['users' => $this->r->getConversations()]);
