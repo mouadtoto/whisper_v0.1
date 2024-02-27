@@ -36,9 +36,10 @@ Route::post('/conversations/{user}', [ConversationController::class,'store'])->m
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/myprofile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/MyProfile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');
+    Route::get('/UpdateMyProfile/{userId}', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/UpdateMyProfile/{userId}', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/update-message-auto-delete/{userId}', [ProfileController::class, 'updateMessage'])->name('profile.update-message-auto-delete');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

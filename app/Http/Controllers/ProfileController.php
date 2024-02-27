@@ -10,15 +10,11 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Auth\AuthManager;
 use App\Models\User;
-
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
-     */
-
-     /**
      * @var AuthManager
      */
     private $auth;
@@ -29,31 +25,17 @@ class ProfileController extends Controller
     }
 
     public function getUser($userId)
-    { 
+    {
         return User::findOrFail($userId);
     }
 
-     public function myprofile()
-     {
-         $userId = $this->auth->user()->id;
-         $user = $this->getUser($userId);
-         
-         return view('profile.myprofile', ['user' => $user]);
-     }
-    // public function  index()
-    // {
-    //     return view('conversations/index',['users' => $this->r->getConversations()]);
+    public function myprofile()
+    {
+        $userId = $this->auth->user()->id;
+        $user = $this->getUser($userId);
 
-    // }
-    // public function show(User $user)
-    // {
-    //     return view('conversations/show',[
-
-    //         'users' => $this->r->getConversations($this->auth->user()->id),
-    //         'user' => $user,
-    //         'messages'=> $this->r->getMessagesFor($this->auth->user()->id,$user->id)->get()
-    //     ]);
-    // }
+        return view('profile.myprofile', ['user' => $user]);
+    }
 
     public function edit(Request $request): View
     {
@@ -62,25 +44,66 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request, $userId): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $this->getUser($userId);
+        if ($user) {
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'username' => 'required|string',
+                'status' => 'required|string',
+                'userImage' => ''
+            ]);
+
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
+            }
+            if ($request->hasFile('userImage')) {
+                $uploadImage = request()->file('userImage');
+                $imageName = time() . '.' . $uploadImage->getClientOriginalExtension();
+                $uploadImage->move(public_path('images'), $imageName);
+                // $validatedData['userImage'] = $uploadImage;
+            } else {
+                $validatedData['userImage'] = $user->userImage;
+            }
+
+            // echo '<pre>';
+            // // print_r($user);
+            // $expiryDate = $user->created_at->addHours(24);
+            // printf("Now: %s", $expiryDate);
+            //  // Get the creation date from the user object and add 24 hours to it
+            // echo '</pre>';
+            // // echo $user->userImage;
+            // exit();
+            $user->update([
+                'name' => $validatedData['name'],
+                'username' => $validatedData['username'],
+                'status' => $validatedData['status'],
+                'userImage' => $imageName,
+            ]);
+            return Redirect::route('profile.myprofile')->with('status', 'profile-updated');
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.myprofile');
     }
 
-    /**
-     * Delete the user's account.
-     */
+    public function updateMessage(Request $request, $userId)
+    {
+        $user = $this->getUser($userId);
+
+        // Validate the request data
+        $request->validate([
+            'message_auto_delete' => 'required|boolean', // Assuming the input will be a boolean value
+        ]);
+
+        // Update the user's preference for message auto-deletion
+        $user->update([
+            'message_auto_delete' => $request->input('message_auto_delete'),
+        ]);
+
+        return Redirect::route('profile.myprofile')->with('success', 'Message auto-deletion preference updated successfully.');
+    }
+
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
