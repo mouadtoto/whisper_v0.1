@@ -26,6 +26,7 @@ class ProviderController extends Controller
             'provider_token'=>$SocialUser->token,
         ]);
 
+        $user->sendEmailVerificationNotification();
         Auth::login($user);
         return redirect('/dashboard');
     }
