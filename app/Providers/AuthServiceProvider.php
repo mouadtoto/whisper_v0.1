@@ -7,6 +7,8 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Auth\Notifications\ResetPassword;
 use App\Models\User;
 use App\Policies\UserPolicy;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,17 @@ class AuthServiceProvider extends ServiceProvider
 
         ResetPassword::createUrlUsing(function($user,$token){
             return 'http://localhost/reset-password/'.$token;
+        });
+
+
+
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            return (new MailMessage)
+                ->subject('Verify Email Address')
+                ->line('Click the button below to verify your email address.')
+                ->lineif($notifiable->provider,'please update your username: '.$notifiable->username)
+                ->lineif($notifiable->provider,'please update your password: '.$notifiable->password)
+                ->action('Verify Email Address', $url);
         });
     }
 }
