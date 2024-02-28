@@ -24,9 +24,11 @@ class CheckTalkToPolicyMiddleware
     }
     public function handle($request, Closure $next)
     {
+
         $user = $request->route('user');
 
         if (!$this->userPolicy->talkTo(Auth::user(), $user)) {
+
             throw new AuthorizationException('You are not authorized to talk to this user.');
         }
 
