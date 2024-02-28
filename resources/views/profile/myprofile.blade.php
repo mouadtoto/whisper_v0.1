@@ -52,6 +52,11 @@
               </div>
             </div>
           </div>
+          <div class="w-full flex items-center">
+            <div class="m-auto">
+            {!!$qr!!}
+          </div>
+        </div>
           <div class="text-center mt-12">
             <h3 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
               {{ $user->name }}
@@ -79,9 +84,7 @@
         </div>
       </div>
     </div>
-<div>
-  {!!$qr!!}
-</div>
+
 
     <footer class="relative bg-blueGray-200 pt-8 pb-6 mt-8">
   <div class="container mx-auto px-4">

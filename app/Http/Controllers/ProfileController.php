@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Auth\AuthManager;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\URL;
 
 
 class ProfileController extends Controller
@@ -34,14 +36,19 @@ class ProfileController extends Controller
         return User::findOrFail($userId);
     }
 
+
     public function myprofile()
     {
-        $userId = $this->auth->user()->id;
+        $userId = auth()->user()->id;
         $user = $this->getUser($userId);
         $id = auth()->user()->id;
-        $QR = QrCode::generate('localhost/Qr/friend/'.$id);
+        $url = "localhost/Qr/friend/".$id;
+        // $temporaryLink = URL::temporarySignedRoute($url, now()->addHours(1)); 
+        $QR = QrCode::generate($url);
+        Cache::put('url', $url, now()->addHour());
         return view('profile.myprofile', ['user' => $user])->with('qr', $QR);
     }
+
     // public function  index()
     // {
     //     return view('conversations/index',['users' => $this->r->getConversations()]);

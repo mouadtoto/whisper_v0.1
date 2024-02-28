@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Request as ModelsRequest;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index(){
-        return view('friends') ; 
+    $pending = ModelsRequest::where('from_id' , auth()->user()->id)->where('status' , 'pending')->get();
+    $friends = ModelsRequest::where('from_id' , auth()->user()->id)->where('status' , 'approved')->get();
+    return view('friends' , ['pending'=>$pending , 'friends'=>$friends]) ; 
     }
 }

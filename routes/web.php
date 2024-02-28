@@ -26,7 +26,7 @@ Route::get('/', function () {
  
 Route::get('/auth/{provider}/redirect', [ProviderController::class,'redirect']);
 Route::get('/auth/{provider}/callback', [ProviderController::class,'callback'] );
-Route::get('/friends', [HomeController::class , 'index'] )->name('friends');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -39,9 +39,12 @@ Route::post('/conversations/{user}', [ConversationController::class,'store'])->m
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/friends', [HomeController::class , 'index'] )->name('friends');
     Route::post('/request/sent', [RequestController::class,'storeRequest'])->name('request');
-    Route::post('/Qr/friend/{id}', [RequestController::class, 'storeQrRequest']);
+    Route::post('/Qr/friend/{id}', [RequestController::class, 'storeQrRequest'])->name('qr');
     Route::get('/myprofile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');
+    Route::get('/requests/pending', [RequestController::class, 'getpending']);
+    Route::get('/requests/Friends', [RequestController::class, 'getFriends']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
