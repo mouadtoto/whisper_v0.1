@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request as ModelsRequest;
+use App\Models\Request as FriendRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class RequestController extends Controller
 {
@@ -34,7 +36,6 @@ class RequestController extends Controller
         }
         
     }
-
 
     public function storeQrRequest($id)
     {
@@ -67,5 +68,43 @@ class RequestController extends Controller
     {
         $data = ModelsRequest::where('status', 'approved')->where('from_id', auth()->user()->id)->get();
         return json_encode($data);
+
+    }
+
+
+    public function acceptFriendRequest($friendId)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                throw new \Exception('Utilisateur non connecté.');
+            }
+
+            FriendRequest::where('from_id', $friendId)
+                ->where('to_id', $user->id)
+                ->update(['status' => 'accepted']);
+
+            return Redirect::back()->with('success', 'Demande d\'ami acceptée avec succès.');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function rejectFriendRequest($friendId)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                throw new \Exception('Utilisateur non connecté.');
+            }
+
+            FriendRequest::where('from_id', $friendId)
+                ->where('to_id', $user->id)
+                ->delete();
+
+            return Redirect::back()->with('success', 'Demande d\'ami rejetée avec succès.');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
     }
 }
