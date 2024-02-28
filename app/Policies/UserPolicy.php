@@ -13,8 +13,10 @@ class UserPolicy
 
     public function talkTo(User $user,User $to)
     {
-        return $user->id !==$to->id;
-
+        if ($user->id === $to->id) {
+            return false;
+        }
+        return true;
     }
     public function viewAny(User $user): bool
     {

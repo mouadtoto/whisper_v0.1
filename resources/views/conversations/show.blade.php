@@ -41,7 +41,7 @@
                         @include('conversations.users', ['users' => $users])
                     </div>
                 </div>
-                <div class="flex flex-col flex-auto h-full p-6">
+                <div class="flex flex-col flex-auto h-full p-6 ">
                     <div class="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
                         <div class="flex flex-col h-full overflow-x-auto mb-4">
                             <div class="flex flex-col h-full">
@@ -121,5 +121,61 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let formData = new FormData(this); // Get form data
+
+            // Send AJAX request
+            fetch('{{ route("conversations.store", ['user' => $user->id]) }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to store message');
+                    }
+                    return response.json(); // Parse response JSON
+                })
+                .then(data => {
+                    if (data.success) {
+                        let newMessageHtml = `
+                <div class="col-start-6 col-end-13 p-3 rounded-lg">
+                    <div class="flex items-center justify-start flex-row-reverse">
+                        <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                            Moi
+                        </div>
+                        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                            <div>${formData.get('content')}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+                        // Append the new message HTML to the message container
+                        let messageContainer = document.getElementById('messageContainer');
+                        messageContainer.insertAdjacentHTML('beforeend', newMessageHtml);
+                        setTimeout(function () {
+                            window.scrollTo(0, document.body.scrollHeight); // Scroll to bottom of page
+                        }, 2);
+                        // Clear the input field
+                        document.getElementById('content').value = '';
+                    } else {
+                        // Handle error if message storage failed
+                        console.error('Failed to store message:', data.error);
+                    }
+                })
+                .catch(error => {
+                    // Handle any network or server error
+                    console.error('Error:', error);
+                });
+        });
+
+        window.userId = {!! json_encode(auth()->user()->id) !!};
+    </script>
 
 </x-app-layout>
