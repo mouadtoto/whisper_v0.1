@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessage;
 use App\Http\Requests\StoreMessageRequest;
 use App\Models\User;
 use App\Repository\ConversationRepository;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ConversationController extends Controller
 {
@@ -42,13 +44,29 @@ class ConversationController extends Controller
             'messages'=> $this->r->getMessagesFor($this->auth->user()->id,$user->id)->get()
         ]);
     }
-    public function store(User $user , StoreMessageRequest $request)
+    public function store(User $user, StoreMessageRequest $request)
     {
-      $this->r->createMessage(
-          $request ->get('content'),
-          $this->auth->user()->id,
-          $user->id
-      );
-      return redirect(route('conversations.show',['user' =>$user->id]));
+        try {
+            // Create a new message using the createMessage method
+            $message = $this->r->createMessage(
+                $request->get('content'), // Get the content from the request
+                auth()->user()->id, // Get the authenticated user's ID
+                $user->id // Get the ID of the user the message is being sent to
+            );
+
+            // Broadcast the NewMessage event
+            broadcast(new NewMessage($message->content, auth()->user()))->toOthers();
+
+            // Return a success response
+            return response()->json([
+                'success' => true,
+            ]);
+        } catch (\Exception $e) {
+            // If an exception occurs, return an error response
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(), // Include the error message in the response
+            ], 500); // Use status code 500 for internal server error
+        }
     }
 }

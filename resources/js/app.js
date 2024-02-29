@@ -19,3 +19,11 @@ function getFriends(){
     .then(response => response.json())
     .then(data =>console.log(data));
 }
+
+
+const userId = window.userId;
+window.Echo.private(`chat.${userId}`)
+    .listen('.new-message', (event) => {
+        console.log('New message received:', event);
+
+    });

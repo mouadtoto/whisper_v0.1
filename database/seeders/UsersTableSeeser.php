@@ -14,7 +14,7 @@ class UsersTableSeeser extends Seeder
     {
         for ($i =0 ; $i < 10 ; $i++){
             \DB::table('users')->insert([
-                'name' => "jhoneDoe",
+                'name' => "jhone$i@Doe",
                 'email' => "jhone$i@gmail.com",
                 'password' =>bcrypt('0000')
             ]);
