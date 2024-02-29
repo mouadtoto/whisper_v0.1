@@ -39,13 +39,11 @@ Route::get('/conversations/{user}', [ConversationController::class, 'show'])
 Route::post('/conversations/{user}', [ConversationController::class, 'store'])
     ->middleware(['canTalkTo', 'auth', 'verified'])
     ->name('conversations.store');
-
-
-    Route::post('/accept-friend-request', 'RequestController@acceptFriendRequest')->name('acceptFriendRequest');
-    Route::post('/reject-friend-request', 'RequestController@rejectFriendRequest')->name('rejectFriendRequest');
-
+    Route::post('/profile/update-message-auto-delete', [ProfileController::class, 'updateMessageAutoDelete'])->name('profile.update-message-auto-delete');
 
 Route::middleware('auth')->group(function () {
+    Route::post('/request/friends/accept/{friendId}', [RequestController::class, 'acceptFriendRequest'])->name('acceptFriendRequest');
+    Route::post('/request/friends/deny/{friendId}', [RequestController::class,'rejectFriendRequest'])->name('rejectFriendRequest');
     Route::get('/friends', [HomeController::class , 'index'] )->name('friends');
     Route::post('/request/sent', [RequestController::class,'storeRequest'])->name('request');
     Route::post('/Qr/friend/{id}', [RequestController::class, 'storeQrRequest'])->name('qr');
