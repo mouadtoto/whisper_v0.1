@@ -43,9 +43,9 @@ class RegisteredUserController extends Controller
             'username'=> $request->username , 
             'password' => Hash::make($request->password),
         ]);
-
         event(new Registered($user));
-
+        
+        $user->sendEmailVerificationNotification();
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
