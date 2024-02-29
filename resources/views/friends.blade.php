@@ -73,9 +73,15 @@
                             {{$pendings->status}}</p>
                     </td>
                     <td class="p-4 border-b border-blue-gray-50">
-                        <form action="">
-                            <input type="text" class="hidden" name="userid" value="{{$pendings->user->id}}">
-                            <input type="submit" value="accept">
+                        <form action="{{ route('acceptFriendRequest') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="userId" value="{{ $pendings->user->id }}">
+                            <button type="submit">Accepter</button>
+                        </form>
+                        <form action="{{ route('rejectFriendRequest') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="userId" value="{{ $pendings->user->id }}">
+                            <button type="submit">Refuser</button>
                         </form>
                     </td>
                 </tr>

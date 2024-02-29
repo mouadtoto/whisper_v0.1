@@ -72,39 +72,47 @@ class RequestController extends Controller
     }
 
 
-    public function acceptFriendRequest($friendId)
-    {
-        try {
-            $user = auth()->user();
-            if (!$user) {
-                throw new \Exception('Utilisateur non connecté.');
-            }
+    public function acceptFriendRequest(Request $request)
+{
+    try {
+        $friendId = $request->userId;
+        // Assurez-vous d'importer le modèle ModelsRequest en haut du fichier
+        $friendRequest = ModelsRequest::where('from_id', $friendId)
+            ->where('to_id', auth()->user()->id)
+            ->where('status', 'pending')
+            ->first();
 
-            FriendRequest::where('from_id', $friendId)
-                ->where('to_id', $user->id)
-                ->update(['status' => 'accepted']);
-
-            return Redirect::back()->with('success', 'Demande d\'ami acceptée avec succès.');
-        } catch (\Exception $e) {
-            return Redirect::back()->with('error', $e->getMessage());
+        if (!$friendRequest) {
+            throw new \Exception('Demande d\'ami non trouvée ou déjà traitée.');
         }
+
+        $friendRequest->update(['status' => 'accepted']);
+
+        return Redirect::back()->with('success', 'Demande d\'ami acceptée avec succès.');
+    } catch (\Exception $e) {
+        return Redirect::back()->with('error', $e->getMessage());
     }
+}
 
-    public function rejectFriendRequest($friendId)
-    {
-        try {
-            $user = auth()->user();
-            if (!$user) {
-                throw new \Exception('Utilisateur non connecté.');
-            }
+public function rejectFriendRequest(Request $request)
+{
+    try {
+        $friendId = $request->userId;
+        $friendRequest = ModelsRequest::where('from_id', $friendId)
+            ->where('to_id', auth()->user()->id)
+            ->where('status', 'pending')
+            ->first();
 
-            FriendRequest::where('from_id', $friendId)
-                ->where('to_id', $user->id)
-                ->delete();
-
-            return Redirect::back()->with('success', 'Demande d\'ami rejetée avec succès.');
-        } catch (\Exception $e) {
-            return Redirect::back()->with('error', $e->getMessage());
+        if (!$friendRequest) {
+            throw new \Exception('Demande d\'ami non trouvée ou déjà traitée.');
         }
+
+        $friendRequest->delete();
+
+        return Redirect::back()->with('success', 'Demande d\'ami rejetée avec succès.');
+    } catch (\Exception $e) {
+        return Redirect::back()->with('error', $e->getMessage());
     }
+}
+
 }
