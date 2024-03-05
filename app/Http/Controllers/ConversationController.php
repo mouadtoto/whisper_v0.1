@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageEvent;
 use App\Events\NewMessage;
 use App\Http\Requests\StoreMessageRequest;
 use App\Models\User;
@@ -16,7 +17,7 @@ class ConversationController extends Controller
      * @var ConversationRepository
      */
 
-    private  $r;
+    private  $creatmessage;
     /**
      * @var AuthManager
      */
@@ -24,14 +25,14 @@ class ConversationController extends Controller
 
     public function __construct(ConversationRepository $conversationRepository, AuthManager $authManager)
     {
-        $this->r=$conversationRepository;
+        $this->creatmessage=$conversationRepository;
         $this->auth = $authManager;
 
 
     }
     public function  index()
     {
-        return view('conversations/index',['users' => $this->r->getConversations($this->auth->user()->id)]);
+        return view('conversations/index',['users' => $this->creatmessage->getConversations($this->auth->user()->id)]);
 
     }
     public function show(User $user)
@@ -39,23 +40,32 @@ class ConversationController extends Controller
 
         return view('conversations/show',[
 
-            'users' => $this->r->getConversations($this->auth->user()->id),
+            'users' => $this->creatmessage->getConversations($this->auth->user()->id),
             'user' => $user,
-            'messages'=> $this->r->getMessagesFor($this->auth->user()->id,$user->id)->get()
+            'messages'=> $this->creatmessage->getMessagesFor($this->auth->user()->id,$user->id)->get()
         ]);
     }
     public function store(User $user, StoreMessageRequest $request)
     {
-        try {
-            // Create a new message using the createMessage method
-            $message = $this->r->createMessage(
-                $request->get('content'), // Get the content from the request
-                auth()->user()->id, // Get the authenticated user's ID
-                $user->id // Get the ID of the user the message is being sent to
-            );
 
-            // Broadcast the NewMessage event
-            broadcast(new NewMessage($message->content, auth()->user()))->toOthers();
+
+        try {
+            if (!auth()->check()) {
+                throw new \Exception('User is not authenticated.');
+            }
+
+            // Get the authenticated user
+            $authenticatedUser = auth()->user();
+            // Create a new message using the createMessage method
+             $this->creatmessage->createMessage(
+                $request->get('content'), // Get the content from the request
+                 $authenticatedUser->id, // Get the authenticated user's ID
+                $request->get('to_id') // Get the ID of the user the message is being sent to
+            );
+            //event(new NewMessage($request->get('content'), $authenticatedUser,$request->get('to_id'), $authenticatedUser->id));
+            event(new MessageEvent($request->get('content'), $authenticatedUser, $authenticatedUser->id,$request->get('to_id')));
+
+
 
             // Return a success response
             return response()->json([

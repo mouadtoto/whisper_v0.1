@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 
-class  ConversationRepository
+class  ConversationRepository extends \App\Models\Message
 {
     /**
      * @var User
@@ -40,14 +40,18 @@ class  ConversationRepository
         ]);
 
     }
-     public function getMessagesFor($from,$to) :Builder
-     {
-          return $this->message->newQuery()->whereRaw("((from_id =$from AND to_id =$to)OR (from_id = $to AND to_id = $from))")
-             ->orderBy('created_at','ASC')
-              ->with([
-                  'from' => function ($query) { return $query->select('name','id');}
-              ]);
-     }
+    public function getMessagesFor($from, $to): Builder
+    {
+
+        return $this->message->newQuery()
+            ->whereRaw("((from_id = $from AND to_id = $to) OR (from_id = $to AND to_id = $from))")
+            ->orderBy('created_at', 'ASC')
+            ->with([
+                'user' => function ($query) {
+                    return $query->select('name', 'id');
+                }
+            ]);
+    }
 
     /**
      * Récupére le nombre de messages non lus pour chaque conversation

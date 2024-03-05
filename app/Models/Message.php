@@ -18,9 +18,9 @@ class Message extends Model
         'to_id',
         'read_at'
     ];
-    public function from()
+    public function user( )
     {
-        return $this->belongsTo(User::class,'from_id');
+        return $this->belongsTo(User::class ,'from_id');
 
     }
 }

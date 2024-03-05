@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="grid grid-cols-12 gap-y-2" id="messageContainer">
                                     @foreach($messages as $message)
-                                        @if($message->from->id !== auth()->user()->id)
+                                        @if($message->user->id !== auth()->user()->id)
                                             <div class="col-start-1 col-end-8 p-3 rounded-lg">
                                                 <div class="flex flex-row items-center">
                                                     <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
@@ -84,6 +84,11 @@
                                         <input id="content"  name="content" type="text" placeholder="Write message" class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"/>
                                 </div>
                             </div>
+                              <div class="flex-grow ml-4">
+                                  <div class="relative w-full">
+                                      <input id="to_id"  name="to_id" type="number" placeholder="Write message" class="w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10 hidden" value="{{$user->id}}"/>
+                                  </div>
+                              </div>
                             <div class="ml-4">
                                 <button type="submit" class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
                                     <span>Send</span>
@@ -155,7 +160,18 @@
                 });
         });
 
-        window.userId = {!! json_encode(auth()->user()->id) !!};
     </script>
+        <script>
 
+            const receiverId = {{ $user->id ?? 'null' }};
+            const SenderId = {{auth()->user()->id ?? 'null'}};
+            if (receiverId) {
+                console.log('Receiver ID:', receiverId);
+                console.log('sender ID:',SenderId)
+            } else {
+                console.error('Receiver ID is null or undefined.');
+                console.error('Sender ID is null or undefined.');
+
+            }
+        </script>
 </x-app-layout>

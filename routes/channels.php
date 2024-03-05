@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -16,19 +17,7 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
-Broadcast::channel('chat.{userId}', function ($user, $userId) {
-    // Check if the user is authenticated
-    if ($user) {
-        // Check if the authenticated user's ID matches the {userId} parameter
-        if ($user->id == $userId) {
-            // User is authorized to access the private channel
-            return true;
-        } else {
-            // User is not authorized; deny access
-            return false;
-        }
-    } else {
-        // User is not authenticated; deny access
-        return false;
-    }
+
+Broadcast::channel('private.chat.{idS}.{idR}', function ($user, $idS, $idR) {
+    return $user->id == $idS  || $user->id == $idR;
 });
