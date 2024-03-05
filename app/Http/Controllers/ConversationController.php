@@ -64,9 +64,6 @@ class ConversationController extends Controller
             );
             //event(new NewMessage($request->get('content'), $authenticatedUser,$request->get('to_id'), $authenticatedUser->id));
             event(new MessageEvent($request->get('content'), $authenticatedUser, $authenticatedUser->id,$request->get('to_id')));
-
-
-
             // Return a success response
             return response()->json([
                 'success' => true,

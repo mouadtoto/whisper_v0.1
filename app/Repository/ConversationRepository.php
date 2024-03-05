@@ -51,6 +51,7 @@ class  ConversationRepository extends \App\Models\Message
                     return $query->select('name', 'id');
                 }
             ]);
+            
     }
 
     /**
