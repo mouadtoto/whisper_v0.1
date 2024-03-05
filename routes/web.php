@@ -41,8 +41,8 @@ Route::post('/conversations/{user}', [ConversationController::class, 'store'])
     ->name('conversations.store');
 
 
-    Route::post('/accept-friend-request', 'RequestController@acceptFriendRequest')->name('acceptFriendRequest');
-    Route::post('/reject-friend-request', 'RequestController@rejectFriendRequest')->name('rejectFriendRequest');
+    Route::post('/request/friends/accept/{friendId}', [RequestController::class, 'acceptFriendRequest'])->name('acceptFriendRequest');
+    Route::post('/request/friends/deny/{friendId}', [RequestController::class,'rejectFriendRequest'])->name('rejectFriendRequest');
 
 
 Route::middleware('auth')->group(function () {

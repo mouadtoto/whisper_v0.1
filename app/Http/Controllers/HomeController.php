@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index(){
-    $pending = ModelsRequest::where('from_id' , auth()->user()->id)->where('status' , 'pending')->get();
-    $friends = ModelsRequest::where('from_id' , auth()->user()->id)->where('status' , 'approved')->get();
+    $pending = ModelsRequest::where('to_id' , auth()->user()->id)->where('status' , 'pending')->get();
+    $friends = ModelsRequest::where('to_id' , auth()->user()->id)->where('status' , 'approved')->get();
     return view('friends' , ['pending'=>$pending , 'friends'=>$friends]) ; 
     }
 }

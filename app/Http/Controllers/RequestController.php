@@ -43,6 +43,7 @@ class RequestController extends Controller
         $existingRequest = ModelsRequest::where('from_id', $authenticatedUserId)
             ->where('to_id', $id)
             ->first();
+            
         if ($existingRequest) {
             return redirect()->back();
         } else {
@@ -61,58 +62,52 @@ class RequestController extends Controller
     }
     public function getpending()
     {
-        $data = ModelsRequest::where('status', 'pending')->where('from_id', auth()->user()->id)->get();
+        $data = ModelsRequest::where('status', 'pending')->where('to_id', auth()->user()->id)->get();
         return json_encode($data);
     }
     public function getFriends()
     {
-        $data = ModelsRequest::where('status', 'approved')->where('from_id', auth()->user()->id)->get();
+        $data = ModelsRequest::where('status', 'approved')->where('to_id', auth()->user()->id)->get();
         return json_encode($data);
 
     }
 
 
-    public function acceptFriendRequest(Request $request)
-{
-    try {
-        $friendId = $request->userId;
-        // Assurez-vous d'importer le modèle ModelsRequest en haut du fichier
-        $friendRequest = ModelsRequest::where('from_id', $friendId)
-            ->where('to_id', auth()->user()->id)
-            ->where('status', 'pending')
-            ->first();
+    public function acceptFriendRequest($friendId)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                throw new \Exception('Utilisateur non connecté.');
+            }
+            
+            ModelsRequest::where('from_id', $friendId)
+            ->where('to_id', $user->id)
+            ->update(['status' => 'approved']);
+            
 
-        if (!$friendRequest) {
-            throw new \Exception('Demande d\'ami non trouvée ou déjà traitée.');
+            return Redirect::back()->with('success', "Demande d'ami acceptée avec succès.");
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', $e->getMessage());
         }
-
-        $friendRequest->update(['status' => 'accepted']);
-
-        return Redirect::back()->with('success', 'Demande d\'ami acceptée avec succès.');
-    } catch (\Exception $e) {
-        return Redirect::back()->with('error', $e->getMessage());
     }
-}
 
-public function rejectFriendRequest(Request $request)
-{
-    try {
-        $friendId = $request->userId;
-        $friendRequest = ModelsRequest::where('from_id', $friendId)
-            ->where('to_id', auth()->user()->id)
-            ->where('status', 'pending')
-            ->first();
+    public function rejectFriendRequest($friendId)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                throw new \Exception('Utilisateur non connecté.');
+            }
 
-        if (!$friendRequest) {
-            throw new \Exception('Demande d\'ami non trouvée ou déjà traitée.');
+            ModelsRequest::where('from_id', $friendId)
+                ->where('to_id', $user->id)
+                ->delete();
+
+            return Redirect::back()->with("success", "Demande d'ami rejetée avec succès.");
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', $e->getMessage());
         }
-
-        $friendRequest->delete();
-
-        return Redirect::back()->with('success', 'Demande d\'ami rejetée avec succès.');
-    } catch (\Exception $e) {
-        return Redirect::back()->with('error', $e->getMessage());
     }
-}
 
 }
