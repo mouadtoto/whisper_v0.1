@@ -22,7 +22,8 @@ class StoreMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content'=> 'required|min:2'
+            'content'=> 'required|min:2',
+            'to_id'=> 'required',
         ];
     }
 }

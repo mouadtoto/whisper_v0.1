@@ -48,9 +48,9 @@
                                 <div class="flex  justify-between bg-indigo-100 text-gray-900 rounded-lg p-2">
                                     {{ $user->name }}
                                 </div>
-                                <div class="grid grid-cols-12 gap-y-2">
-                                    @foreach ($messages as $message)
-                                        @if ($message->from->id !== auth()->user()->id)
+                                <div class="grid grid-cols-12 gap-y-2" id="messageContainer">
+                                    @foreach($messages as $message)
+                                        @if($message->user->id !== auth()->user()->id)
                                             <div class="col-start-1 col-end-8 p-3 rounded-lg">
                                                 <div class="flex flex-row items-center">
                                                     <div
@@ -100,6 +100,11 @@
                                             class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10" />
                                     </div>
                                 </div>
+                                <div class="flex-grow ml-4">
+                                    <div class="relative w-full">
+                                        <input id="to_id"  name="to_id" type="number" placeholder="Write message" class="w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10 hidden" value="{{$user->id}}"/>
+                                    </div>
+                                </div>
                                 <div class="ml-4">
                                     <button type="submit"
                                         class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
@@ -115,6 +120,22 @@
                                     </button>
                                 </div>
                             </div>
+                              <div class="flex-grow ml-4">
+                                  <div class="relative w-full">
+                                      <input id="to_id"  name="to_id" type="number" placeholder="Write message" class="w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10 hidden" value="{{$user->id}}"/>
+                                  </div>
+                              </div>
+                            <div class="ml-4">
+                                <button type="submit" class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                                    <span>Send</span>
+                                    <span class="ml-2">
+                  <svg class="w-4 h-4 transform rotate-45 -mt-px" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                  </svg>
+                </span>
+                                </button>
+                            </div>
+                        </div>
                         </form>
                     </div>
                 </div>
@@ -175,7 +196,18 @@
                 });
         });
 
-        window.userId = {!! json_encode(auth()->user()->id) !!};
     </script>
+        <script>
 
+            const receiverId = {{ $user->id ?? 'null' }};
+            const SenderId = {{auth()->user()->id ?? 'null'}};
+            if (receiverId) {
+                console.log('Receiver ID:', receiverId);
+                console.log('sender ID:',SenderId)
+            } else {
+                console.error('Receiver ID is null or undefined.');
+                console.error('Sender ID is null or undefined.');
+
+            }
+        </script>
 </x-app-layout>

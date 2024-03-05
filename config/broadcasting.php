@@ -36,16 +36,10 @@ return [
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER', 'mt1'), // Provide a default value if cluster is not set
-                'useTLS' => true, // Use TLS by default
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'encrypted' => true,
             ],
-            'host' => env('PUSHER_HOST', 'api-' . env('PUSHER_APP_CLUSTER', 'mt1') . '.pusher.com'), // Move host outside of options for clarity
-            'port' => env('PUSHER_PORT', 6001),
-            'scheme' => env('PUSHER_SCHEME', 'https'),
-            'encrypted' => true,
-            'client_options' => [
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
-            ],
+
         ],
 
         'ably' => [
